@@ -45,9 +45,17 @@ const galleryItems = [
     description: 'Lighthouse Coast Sea',
   },
 ]
-
+//  Получаем ссылки на элементы------------------------------------------------------------->
 const galleryRef = document.querySelector('.js-gallery')
 galleryRef.classList.add('grid')
+
+const modalRefs = {
+  lightBoxRef: document.querySelector('.js-lightbox'),
+  lightBoxOverlayRef: document.querySelector('.lightbox__overlay'),
+  lightBoxContentRef: document.querySelector('.lightbox__content'),
+  lightBoxImageRef: document.querySelector('.lightbox__image'),
+  btnModalCloseRef: document.querySelector('.lightbox__button'),
+}
 
 // Создаем и вешаем гроздь из <li> со ссылкой и картинкой внутри----------------------------->
 galleryItems.map(item => {
@@ -68,3 +76,48 @@ galleryItems.map(item => {
   galleryItemEl.appendChild(galleryLink)
   galleryRef.appendChild(galleryItemEl)
 })
+
+// Делегируем событие клика на родительский узел и открываем модалку по клику на картинке--------------------------------------------->
+galleryRef.addEventListener('click', onGalleryClick)
+
+function onGalleryClick(event) {
+  event.preventDefault()
+
+  const target = event.target
+
+  if (target.nodeName !== 'IMG') return
+  onModalOpen()
+}
+
+// Закрываем модалку кнопкой----------------------------------------------------------->
+modalRefs.btnModalCloseRef.addEventListener('click', onModalClose)
+
+// Закрываем модалку через lightbox---------------------------------------------------->
+modalRefs.lightBoxOverlayRef.addEventListener('click', onLightBoxModalClose)
+function onLightBoxModalClose(event) {
+  if (event.currentTarget === event.target) {
+    onModalClose()
+  }
+}
+
+// Закрываем модалку через ESC--------------------------------------------------------->
+function onEscKeyPress(event) {
+  if (event.code === 'Escape') {
+    onModalClose()
+  }
+}
+
+// Коллбэк открытия модалки----------------------------------------------------------->
+function onModalOpen() {
+  modalRefs.lightBoxRef.classList.add('is-open')
+  modalRefs.lightBoxImageRef.src = event.target.getAttribute('data-source')
+  modalRefs.lightBoxImageRef.alt = event.description
+  window.addEventListener('keydown', onEscKeyPress)
+}
+
+// Коллбек закрытия модалки ----------------------------------------------------------->
+function onModalClose(event) {
+  modalRefs.lightBoxRef.classList.remove('is-open')
+  modalRefs.lightBoxImageRef.src = ''
+  window.removeEventListener('keydown', onEscKeyPress)
+}
