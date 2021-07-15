@@ -107,12 +107,34 @@ function onEscKeyPress(event) {
   }
 }
 
+// Двигаем картинки кнопками---------------------------------------------------------->
+function onLeftRigthKeyPictureMove(event) {
+  if (event.code === 'ArrowLeft') {
+    // modalRefs.lightBoxImageRef.src = 'https://cdn.pixabay.com/photo/2019/05/17/09/27/the-alps-4209272_1280.jpg'
+
+    const currentImageSrcInGallery = galleryRef.firstElementChild.firstElementChild.href
+    console.log(currentImageSrcInGallery)
+
+    const nextImageSrcInGallery = galleryRef.firstElementChild.nextElementSibling.firstElementChild.href
+    console.log(nextImageSrcInGallery)
+
+    const currentModalImageSrc = modalRefs.lightBoxImageRef.src
+    console.log(currentModalImageSrc)
+    if (currentModalImageSrc === currentImageSrcInGallery) {
+      modalRefs.lightBoxImageRef.src = 'https://cdn.pixabay.com/photo/2019/05/17/09/27/the-alps-4209272_1280.jpg'
+    }
+  } else if (event.code === 'ArrowRight') {
+    console.log('right')
+  }
+}
+
 // Коллбэк открытия модалки----------------------------------------------------------->
 function onModalOpen() {
   modalRefs.lightBoxRef.classList.add('is-open')
   modalRefs.lightBoxImageRef.src = event.target.getAttribute('data-source')
   modalRefs.lightBoxImageRef.alt = event.description
   window.addEventListener('keydown', onEscKeyPress)
+  window.addEventListener('keydown', onLeftRigthKeyPictureMove)
 }
 
 // Коллбек закрытия модалки ----------------------------------------------------------->
@@ -120,4 +142,5 @@ function onModalClose(event) {
   modalRefs.lightBoxRef.classList.remove('is-open')
   modalRefs.lightBoxImageRef.src = ''
   window.removeEventListener('keydown', onEscKeyPress)
+  window.removeEventListener('keydown', onLeftRigthKeyPictureMove)
 }
