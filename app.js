@@ -110,37 +110,19 @@ function onEscKeyPress(event) {
 // Двигаем картинки кнопками---------------------------------------------------------->
 
 function onLeftRigthKeyPictureMove(event) {
-  const galleryAllImg = galleryRef.querySelectorAll('img')
-  galleryAllImg.forEach(img => {
-    // console.log(img.src)
-    let currentModalImgSrc = modalRefs.lightBoxImageRef.src;
-    const nextSiblingSrc = img.parentNode.parentNode.nextSibling.firstChild.firstChild.getAttribute('data-source');
-    console.log(img.parentNode.parentNode.nextSibling.firstChild.firstChild.getAttribute('data-source'));
-    if (currentModalImgSrc === img.getAttribute('data-source')) {
-      console.log('lol');
-      currentModalImgSrc = nextSiblingSrc
-      // console.log(nextSiblingSrc);
-    }
-    // console.log(modalRefs.lightBoxImageRef.src);
-    // console.log(img.getAttribute('data-source'));
-  })
-  // if (event.code === 'ArrowLeft') {
-  //   // modalRefs.lightBoxImageRef.src = 'https://cdn.pixabay.com/photo/2019/05/17/09/27/the-alps-4209272_1280.jpg'
-
-  //   const currentImageSrcInGallery = galleryRef.firstElementChild.firstElementChild.href
-  //   console.log(currentImageSrcInGallery)
-
-  //   const nextImageSrcInGallery = galleryRef.firstElementChild.nextElementSibling.firstElementChild.href
-  //   console.log(nextImageSrcInGallery)
-
-  //   const currentModalImageSrc = modalRefs.lightBoxImageRef.src
-  //   console.log(currentModalImageSrc)
-  //   if (currentModalImageSrc === currentImageSrcInGallery) {
-  //     modalRefs.lightBoxImageRef.src = 'https://cdn.pixabay.com/photo/2019/05/17/09/27/the-alps-4209272_1280.jpg'
-  //   }
-  // } else if (event.code === 'ArrowRight') {
-  //   console.log('right')
-  // }
+  if (event.code === 'ArrowLeft') {
+    const galleryAllImg = galleryRef.querySelectorAll('img')
+    galleryAllImg.forEach(img => {
+      if (modalRefs.lightBoxImageRef.src === img.getAttribute('data-source')) {
+        let currentModalImgSrc = modalRefs.lightBoxImageRef.src
+        let nextSiblingSrc =
+          img.parentNode.parentNode.nextElementSibling.firstChild.firstChild.getAttribute('data-source')
+        currentModalImgSrc = nextSiblingSrc
+      }
+    })
+  } else if (event.code === 'ArrowRight') {
+    console.log('right')
+  }
 }
 
 // Коллбэк открытия модалки----------------------------------------------------------->
