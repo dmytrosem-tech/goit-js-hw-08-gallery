@@ -45,6 +45,8 @@ const galleryItems = [
     description: 'Lighthouse Coast Sea',
   },
 ]
+let activeIndex = 0
+
 //  Получаем ссылки на элементы------------------------------------------------------------->
 const galleryRef = document.querySelector('.js-gallery')
 galleryRef.classList.add('grid')
@@ -107,31 +109,23 @@ function onEscKeyPress(event) {
   }
 }
 
-// Двигаем картинки кнопками---------------------------------------------------------->
-
-function onLeftRigthKeyPictureMove(event) {
-  if (event.code === 'ArrowLeft') {
-    const galleryAllImg = galleryRef.querySelectorAll('img')
-    galleryAllImg.forEach(img => {
-      if (modalRefs.lightBoxImageRef.src === img.getAttribute('data-source')) {
-        let currentModalImgSrc = modalRefs.lightBoxImageRef.src
-        let nextSiblingSrc =
-          img.parentNode.parentNode.nextElementSibling.firstChild.firstChild.getAttribute('data-source')
-        currentModalImgSrc = nextSiblingSrc
-      }
-    })
-  } else if (event.code === 'ArrowRight') {
-    console.log('right')
-  }
-}
-
 // Коллбэк открытия модалки----------------------------------------------------------->
 function onModalOpen() {
+  const images = [...document.querySelectorAll('img')]
+  // console.log(images)
+  images.forEach(img => {
+    if (img.src === event.target.src) {
+      activeIndex = images.indexOf(event.target)
+      // console.log(activeIndex)
+    }
+  })
   modalRefs.lightBoxRef.classList.add('is-open')
   modalRefs.lightBoxImageRef.src = event.target.getAttribute('data-source')
   modalRefs.lightBoxImageRef.alt = event.description
   window.addEventListener('keydown', onEscKeyPress)
-  window.addEventListener('keydown', onLeftRigthKeyPictureMove)
+  // window.addEventListener('keydown', onLeftRigthKeyPictureMove)
+  window.addEventListener('keydown', onRight)
+  window.addEventListener('keydown', onLeft)
 }
 
 // Коллбек закрытия модалки ----------------------------------------------------------->
@@ -139,5 +133,21 @@ function onModalClose(event) {
   modalRefs.lightBoxRef.classList.remove('is-open')
   modalRefs.lightBoxImageRef.src = ''
   window.removeEventListener('keydown', onEscKeyPress)
-  window.removeEventListener('keydown', onLeftRigthKeyPictureMove)
+  // window.removeEventListener('keydown', onLeftRigthKeyPictureMove)
+  window.removeEventListener('keydown', onRight)
+  window.removeEventListener('keydown', onLeft)
+}
+
+// Функции для действий по кнопкам "влево" и "вправо"--------------------------->
+function onRight() {
+  if (event.code === 'ArrowRight') {
+    activeIndex += 1
+    modalRefs.lightBoxImageRef.src = [...document.querySelectorAll('img')][activeIndex].src
+  }
+}
+function onLeft() {
+  if (event.code === 'ArrowLeft') {
+    activeIndex -= 1
+    modalRefs.lightBoxImageRef.src = [...document.querySelectorAll('img')][activeIndex].src
+  }
 }
