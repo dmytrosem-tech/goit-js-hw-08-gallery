@@ -112,18 +112,15 @@ function onEscKeyPress(event) {
 // Коллбэк открытия модалки----------------------------------------------------------->
 function onModalOpen() {
   const images = [...document.querySelectorAll('img')]
-  // console.log(images)
   images.forEach(img => {
     if (img.src === event.target.src) {
       activeIndex = images.indexOf(event.target)
-      // console.log(activeIndex)
     }
   })
   modalRefs.lightBoxRef.classList.add('is-open')
   modalRefs.lightBoxImageRef.src = event.target.getAttribute('data-source')
   modalRefs.lightBoxImageRef.alt = event.description
   window.addEventListener('keydown', onEscKeyPress)
-  // window.addEventListener('keydown', onLeftRigthKeyPictureMove)
   window.addEventListener('keydown', onRight)
   window.addEventListener('keydown', onLeft)
 }
@@ -133,7 +130,6 @@ function onModalClose(event) {
   modalRefs.lightBoxRef.classList.remove('is-open')
   modalRefs.lightBoxImageRef.src = ''
   window.removeEventListener('keydown', onEscKeyPress)
-  // window.removeEventListener('keydown', onLeftRigthKeyPictureMove)
   window.removeEventListener('keydown', onRight)
   window.removeEventListener('keydown', onLeft)
 }
@@ -142,12 +138,22 @@ function onModalClose(event) {
 function onRight() {
   if (event.code === 'ArrowRight') {
     activeIndex += 1
-    modalRefs.lightBoxImageRef.src = [...document.querySelectorAll('img')][activeIndex].src
+    const imgArr = [...document.querySelectorAll('img')]
+    modalRefs.lightBoxImageRef.src = imgArr[activeIndex].getAttribute('data-source')
+    if (activeIndex > imgArr.length - 2) {
+      console.log('out')
+      onModalClose()
+    }
   }
 }
 function onLeft() {
   if (event.code === 'ArrowLeft') {
     activeIndex -= 1
-    modalRefs.lightBoxImageRef.src = [...document.querySelectorAll('img')][activeIndex].src
+    const imgArr = [...document.querySelectorAll('img')]
+    modalRefs.lightBoxImageRef.src = imgArr[activeIndex].getAttribute('data-source')
+    if (activeIndex < 0) {
+      console.log('out')
+      onModalClose()
+    }
   }
 }
