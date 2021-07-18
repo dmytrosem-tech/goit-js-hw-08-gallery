@@ -45,7 +45,6 @@ const galleryItems = [
     description: 'Lighthouse Coast Sea',
   },
 ]
-let activeIndex = 0
 
 //  Получаем ссылки на элементы------------------------------------------------------------->
 const galleryRef = document.querySelector('.js-gallery')
@@ -59,25 +58,51 @@ const modalRefs = {
   btnModalCloseRef: document.querySelector('.lightbox__button'),
 }
 
-// Создаем и вешаем гроздь из <li> со ссылкой и картинкой внутри----------------------------->
-galleryItems.map(item => {
-  const galleryItemEl = document.createElement('li')
-  galleryItemEl.classList.add('gallery__item')
+// // Создаем и вешаем гроздь из <li> со ссылкой и картинкой внутри----------------------------->
+// const itemsToAppend = galleryItems.map(item => {
+//  const galleryItemElement = document.createElement('li')
+//   galleryItemElement.classList.add('gallery__item')
+//   // galleryItemElArr.push(galleryItemElement)
 
-  const galleryLink = document.createElement('a')
-  galleryLink.classList.add('gallery__link')
-  galleryLink.href = item.original
+//   const galleryLink = document.createElement('a')
+//   galleryLink.classList.add('gallery__link')
+//   galleryLink.href = item.original
 
-  const galleryImage = document.createElement('img')
-  galleryImage.classList.add('gallery__image')
-  galleryImage.src = item.preview
-  galleryImage.setAttribute('data-source', item.original)
-  galleryImage.alt = item.description
+//   const galleryImage = document.createElement('img')
+//   galleryImage.classList.add('gallery__image')
+//   galleryImage.src = item.preview
+//   galleryImage.setAttribute('data-source', item.original)
+//   galleryImage.alt = item.description
+//   console.log(galleryItemElArr);
 
-  galleryLink.appendChild(galleryImage)
-  galleryItemEl.appendChild(galleryLink)
-  galleryRef.appendChild(galleryItemEl)
-})
+//   galleryLink.appendChild(galleryImage)
+//   galleryItemElement.appendChild(galleryLink)
+//   // galleryRef.appendChild(galleryItemEl)
+// })
+
+// Cоздаем гроздь и вешаем через шаблонные строки------------------------------------------------->
+const createdGalleryItems = setGalleryItems(galleryItems)
+
+function setGalleryItems(gallery) {
+  return gallery
+    .map(({ preview, original, description }) => {
+      return `<li class="gallery__item">
+    <a
+      class="gallery__link"
+      href="${original}">
+    <img
+      class="gallery__image"
+      src="${preview}"
+      data-source="${original}"
+      alt="${description}"
+    />
+    </a>
+  </li>`
+    })
+    .join('')
+}
+
+galleryRef.insertAdjacentHTML('beforeend', createdGalleryItems)
 
 // Делегируем событие клика на родительский узел и открываем модалку по клику на картинке--------------------------------------------->
 galleryRef.addEventListener('click', onGalleryClick)
@@ -91,10 +116,10 @@ function onGalleryClick(event) {
   onModalOpen()
 }
 
-// Закрываем модалку кнопкой----------------------------------------------------------->
+// Закрываем модалку кнопкой------------------------------------------------------------------------------->
 modalRefs.btnModalCloseRef.addEventListener('click', onModalClose)
 
-// Закрываем модалку через lightbox---------------------------------------------------->
+// Закрываем модалку через lightbox------------------------------------------------------------------------>
 modalRefs.lightBoxOverlayRef.addEventListener('click', onLightBoxModalClose)
 function onLightBoxModalClose(event) {
   if (event.currentTarget === event.target) {
@@ -102,58 +127,61 @@ function onLightBoxModalClose(event) {
   }
 }
 
-// Закрываем модалку через ESC--------------------------------------------------------->
+// Закрываем модалку через ESC---------------------------------------------------------------->
 function onEscKeyPress(event) {
   if (event.code === 'Escape') {
     onModalClose()
   }
 }
 
-// Коллбэк открытия модалки----------------------------------------------------------->
+// Коллбэк открытия модалки------------------------------------------------------------------>
+let activeIndex = 0
+const imagesSrcArr = []
+const imagesArr = document.querySelectorAll('img')
+
 function onModalOpen() {
-  const images = [...document.querySelectorAll('img')]
-  images.forEach(img => {
+  
+  imagesArr.forEach(img => {
+    const imageSrc = img.src
+    imagesSrcArr.push(imageSrc)
     if (img.src === event.target.src) {
-      activeIndex = images.indexOf(event.target)
+      activeIndex = imagesSrcArr.indexOf(event.target.src)
     }
   })
+  
   modalRefs.lightBoxRef.classList.add('is-open')
   modalRefs.lightBoxImageRef.src = event.target.getAttribute('data-source')
   modalRefs.lightBoxImageRef.alt = event.description
   window.addEventListener('keydown', onEscKeyPress)
-  window.addEventListener('keydown', onRight)
-  window.addEventListener('keydown', onLeft)
+  window.addEventListener('keydown', onLeftRightKeyPress)
 }
 
-// Коллбек закрытия модалки ----------------------------------------------------------->
+// Коллбек закрытия модалки ----------------------------------------------------------------->
 function onModalClose(event) {
   modalRefs.lightBoxRef.classList.remove('is-open')
   modalRefs.lightBoxImageRef.src = ''
   window.removeEventListener('keydown', onEscKeyPress)
-  window.removeEventListener('keydown', onRight)
-  window.removeEventListener('keydown', onLeft)
+  window.removeEventListener('keydown', onLeftRightKeyPress)
 }
 
-// Функции для действий по кнопкам "влево" и "вправо"--------------------------->
-function onRight() {
-  if (event.code === 'ArrowRight') {
-    activeIndex += 1
-    const imgArr = [...document.querySelectorAll('img')]
-    modalRefs.lightBoxImageRef.src = imgArr[activeIndex].getAttribute('data-source')
-    if (activeIndex > imgArr.length - 2) {
-      console.log('out')
-      onModalClose()
-    }
-  }
-}
-function onLeft() {
-  if (event.code === 'ArrowLeft') {
+// Функция для действий по кнопкам "влево" и "вправо"---------------------------------------->
+function onLeftRightKeyPress () {
+  if ( event.code ==='ArrowRight' && activeIndex < galleryItems.length - 1) {
+    activeIndex += 1;
+    modalRefs.lightBoxImageRef.src = galleryItems[activeIndex].original
+    return
+  } else if (event.code === 'ArrowRight' && activeIndex === galleryItems.length - 1) {
+    activeIndex = 0
+    modalRefs.lightBoxImageRef.src = galleryItems[activeIndex].original
+    return
+  } else if (event.code === 'ArrowLeft' && activeIndex > 0 ) {
     activeIndex -= 1
-    const imgArr = [...document.querySelectorAll('img')]
-    modalRefs.lightBoxImageRef.src = imgArr[activeIndex].getAttribute('data-source')
-    if (activeIndex < 0) {
-      console.log('out')
-      onModalClose()
-    }
+    modalRefs.lightBoxImageRef.src = galleryItems[activeIndex].original
+    return
+  } else if (event.code === 'ArrowLeft' && activeIndex === 0) {
+    activeIndex = galleryItems.length - 1;
+    modalRefs.lightBoxImageRef.src = galleryItems[activeIndex].original
+    return
   }
 }
+
