@@ -1,0 +1,28 @@
+{
+  "name": "goit-js-hw-08-gallery",
+  "version": "1.0.0",
+  "description": "Ohh. no! :)",
+  "main": "app.js",
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "build": "parcel build src/index.html "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmytrosem-tech/goit-js-hw-08-gallery.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dmytrosem-tech/goit-js-hw-08-gallery/issues"
+  },
+  "homepage": "https://github.com/dmytrosem-tech/goit-js-hw-08-gallery#readme",
+  "dependencies": {
+    "joi": "^17.4.1",
+    "refs": "^0.9.7"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.5"
+  }
+}
