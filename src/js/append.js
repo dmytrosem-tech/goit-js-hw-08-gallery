@@ -1,21 +1,21 @@
-export function setGalleryItems(gallery) {
-  return gallery
-    .map(({ preview, original, description }) => {
-      return `<li class="gallery__item">
-    <a
-      class="gallery__link"
-      href="${original}">
-    <img
-      class="gallery__image"
-      src="${preview}"
-      data-source="${original}"
-      alt="${description}"
-    />
-    </a>
-  </li>`
-    })
-    .join('')
-}
+// export function setGalleryItems(gallery) {
+//   return gallery
+//     .map(({ preview, original, description }) => {
+//       return `<li class="gallery__item">
+//     <a
+//       class="gallery__link"
+//       href="${original}">
+//     <img
+//       class="gallery__image"
+//       src="${preview}"
+//       data-source="${original}"
+//       alt="${description}"
+//     />
+//     </a>
+//   </li>`
+//     })
+//     .join('')
+// }
 
 // // Создаем и вешаем гроздь из <li> со ссылкой и картинкой внутри----------------------------->
 // const itemsToAppend = galleryItems.map(item => {
